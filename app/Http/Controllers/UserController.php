@@ -28,7 +28,7 @@ class UserController extends Controller
         }
     }
 
-    public function ChangeEmial(Request $request)
+    public function ChangeEmail(Request $request)
     {
         $this->validate($request, [
             'password' => 'required',

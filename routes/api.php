@@ -27,7 +27,7 @@ Route::middleware(['cors', 'auth:sanctum'])->group(function () {
     Route::post('/services', [\App\Http\Controllers\ServiceController::class, 'store'])->middleware('admin');
     Route::put('/change-password', [\App\Http\Controllers\UserController::class, 'ChangePassword']);
     Route::put('/change-email', [\App\Http\Controllers\UserController::class, 'ChangeEmail']);
-
+    Route::post('/logout',[\App\Http\Controllers\AuthController::class],'logout');
 
     Route::put('/service/{id}', [\App\Http\Controllers\ServiceController::class, 'update'])->middleware('admin');
     Route::delete('/service/{id}', [\App\Http\Controllers\ServiceController::class, 'delete'])->middleware('admin');
