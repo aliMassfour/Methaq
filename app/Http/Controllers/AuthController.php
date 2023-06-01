@@ -25,10 +25,13 @@ class AuthController extends Controller
             return $this->error([], 'user not found', 405);
         }
     }
-    public function logout()
+    public function logout(Request $request)
     {
-        
 
-        Auth::user()->currentAccessToken()->delete();
+        if (Auth::check()) {
+            if (Auth::user()->currentAccessToken()->delete()) {
+                return $this->success([], 'logout success');
+            }
+        }
     }
 }
