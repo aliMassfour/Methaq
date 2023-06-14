@@ -12,13 +12,22 @@ class ServiceController extends Controller
     //
     use ImageUploader;
     use HttpRespons;
+
+    public function index()
+    {
+
+        $services = \App\Models\Service::all();
+
+        return view('practice-areas')->with([
+            'services' => $services
+        ]);
+    }
+
     public function store(Request $request)
     {
         $this->validate($request, [
             'name' => 'required',
             'descreption' => 'required',
-
-
         ]);
 
         $service = new \App\Models\Service();
@@ -30,27 +39,23 @@ class ServiceController extends Controller
             $service->image = '';
         }
         if ($service->save()) {
-            return $this->success([
-                'service' => $service,
+            // return $this->success([
+            //     'service' => $service,
 
-            ]);
+            // ]);
+            return redirect(route('admin.index'));
         } else {
             return $this->error([], 'error occured', 500);
         }
     }
-    public function index()
-    {
-        $services = \App\Models\Service::all();
-        if (sizeof($services) > 0) {
-            return $this->success([
-                'services' => $services,
 
-            ]);
-        } else {
-            return $this->success([], 'not found any services');
-        }
+
+    public function edit($id)
+    {
+        $service = \App\Models\Service::find($id);
+        return view('service_works.service_edit')->with('service', $service);
     }
-    public function update($id, Request $request)
+    public function update(Request $request, $id)
     {
         $this->validate($request, [
             'name' => 'required',
@@ -62,24 +67,24 @@ class ServiceController extends Controller
         $service->descreption = $request->get('descreption');
         if ($request->hasFile('image')) {
             $service->image = $this->store_imaeg($request->file('image'));
-        } else {
-            $service->image = '';
         }
         if ($service->save()) {
-            return $this->success([
-                'service' => $service,
-            ], 'update the service success');
+            return redirect(route('admin.index'));
         } else {
-            return $this->error([], 'wromg happend please try again', 500);
+            return redirect()->back();
         }
     }
-    public function delete($id)
+    public function destroy($id)
     {
         $service = \App\Models\Service::find($id);
+        $imagePath = public_path($service->image);
         if ($service->delete()) {
-            return $this->success([], 'deleted success');
-        } else {
-            return $this->error([], 'wrong happened try again', 500);
+            if (file_exists($imagePath)) {
+                unlink($imagePath);
+                return redirect(route('admin.index'));
+            } else {
+                return redirect()->back();
+            }
         }
     }
 }

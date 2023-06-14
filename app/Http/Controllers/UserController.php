@@ -13,37 +13,30 @@ class UserController extends Controller
     {
         $this->validate($request, [
             'current_password' => 'required',
-            'new_password' => 'required|max:8|min:6'
+            'new_password' => 'required|min:6'
         ]);
         $user = auth()->user();
         if (Hash::check($request->get('current_password'), $user->password)) {
             $user->password = Hash::make($request->get('new_password'));
             if ($user->save()) {
-                return $this->success([], 'change the password successfully');
-            } else {
-                return $this->error([], 'wrong happened please again', 500);
+                return redirect(route('admin.index'));
             }
-        } else {
-            return $this->error([], 'current password is not correct', 401);
         }
     }
 
     public function ChangeEmail(Request $request)
     {
         $this->validate($request, [
+            'email' => 'required|email',
             'password' => 'required',
-            'email' => 'required|email'
+
         ]);
         $user = auth()->user();
         if (Hash::check($request->get('password'), $user->password)) {
             $user->email = $request->get('email');
             if ($user->save()) {
-                return $this->success([], 'change the email successfully');
-            } else {
-                return $this->error([], 'wrong happened please try agian', 500);
+                return redirect(route('admin.index'));
             }
-        } else {
-            return $this->error([], 'password is not currect', 401);
         }
     }
 }

@@ -15,10 +15,12 @@ class CreateUsersTable extends Migration
     {
         Schema::create('users', function (Blueprint $table) {
             $table->id();
-            $table->string('name');
+            $table->unsignedBigInteger('role_id');
+            $table->string('name')->nullable();
             $table->string('email')->unique();
             $table->timestamp('email_verified_at')->nullable();
             $table->string('password');
+            // $table->foreign('role_id')->references('id')->on('roles')->onDelete('casacde')->onUpdate('cascade');
             $table->rememberToken();
             $table->timestamps();
         });
@@ -26,7 +28,7 @@ class CreateUsersTable extends Migration
 
     /**
      * Reverse the migrations.
-     *
+     *  
      * @return void
      */
     public function down()
